@@ -17,3 +17,73 @@
 #include <stdio.h>
 #include <string.h>
 #include <raylib.h>
+
+// init game screens
+typedef enum GameScreen
+{
+    SplashScreen = 0,
+    StartScreen,
+    Level_1
+} GameScreen;
+
+
+int main(void)
+{
+    // init game screen 
+    const int screenWidth = 1800;
+    const int screenHeight = 1000;
+    InitWindow(screenWidth, screenHeight, "RE_CLONE");    
+    SetTargetFPS(60);
+    // init current screen
+    GameScreen currentScreen = SplashScreen;
+    
+    // init audio devices 
+    InitAudioDevice();
+
+    while (!WindowShouldClose())
+    {
+        switch(currentScreen)
+        {
+            case SplashScreen:
+            {
+
+            }
+            case StartScreen:
+            {
+
+            }
+            case Level_1:
+            {
+                
+            }
+        }
+
+        BeginDrawing();
+
+        ClearBackground(WHITE);
+
+        switch(currentScreen)
+        {
+            case SplashScreen:
+            {
+
+            }
+            case StartScreen:
+            {
+
+            }
+            case Level_1:
+            {
+                
+            }
+        }
+
+        EndDrawing();
+    }
+    CloseAudioDevice();
+    CloseWindow();
+
+    return 0;    
+
+    
+}

@@ -42,42 +42,58 @@ int main(void)
 
     while (!WindowShouldClose())
     {
+        if(IsGamepadAvailable(0))
+        {
         switch(currentScreen)
         {
             case SplashScreen:
             {
-
+                if(IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))
+                {
+                    currentScreen = StartScreen;
+                }
+                break;
             }
             case StartScreen:
             {
-
+                if(IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT))
+                {
+                    currentScreen = Level_1;
+                }
+                break;
             }
             case Level_1:
             {
                 
             }
+        }
         }
 
         BeginDrawing();
 
         ClearBackground(WHITE);
 
+        if(IsGamepadAvailable(0))
+        {
         switch(currentScreen)
         {
             case SplashScreen:
             {
-
+                DrawText("SplashScreen", (screenWidth/2), 5, 50, BLACK);
+                break;
             }
             case StartScreen:
             {
-
+                DrawText("StartScreen", (screenWidth/2), 5, 50, BLACK);
+                break;
             }
             case Level_1:
             {
-                
+                DrawText("Level 1", (screenWidth/2), 5, 50, BLACK);
+                break;
             }
         }
-
+        }
         EndDrawing();
     }
     CloseAudioDevice();

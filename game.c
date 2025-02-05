@@ -40,6 +40,22 @@ int main(void)
     // init audio devices 
     InitAudioDevice();
 
+    // Splash Screen
+
+    Image zombieSplashImage = LoadImage("images/zombie.jpg");
+    Texture2D zombieTexture = LoadTextureFromImage(zombieSplashImage);
+    UnloadImage(zombieSplashImage);
+
+    // Start Screen
+    Image zombieStartImage = LoadImage("images/zombie2.jpg");
+    Texture2D zombie2Texture = LoadTextureFromImage(zombieStartImage);
+    UnloadImage(zombieStartImage);
+
+    
+    // level 1
+
+
+
     while (!WindowShouldClose())
     {
         if(IsGamepadAvailable(0))
@@ -60,6 +76,11 @@ int main(void)
                 {
                     currentScreen = Level_1;
                 }
+
+                if(IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_UP))
+                {
+                    currentScreen = SplashScreen;
+                }
                 break;
             }
             case Level_1:
@@ -79,17 +100,38 @@ int main(void)
         {
             case SplashScreen:
             {
-                DrawText("SplashScreen", (screenWidth/2), 5, 50, BLACK);
+                Rectangle source = {0,0, zombieSplashImage.width, zombieSplashImage.height};
+                Rectangle dest = {0,0, screenWidth, screenHeight};
+                Vector2 origin = {0,0};
+                DrawTexturePro(zombieTexture, source, dest, origin, 0.0f, WHITE);
+                int fontSizeSplash = 50;
+                int splashLength = MeasureText("SplashScreen", fontSizeSplash);
+                DrawText("SplashScreen", (screenWidth/2-splashLength/2), 5, fontSizeSplash, RED);
+
+               
+
+                int continueLength = MeasureText("Press X to continue", fontSizeSplash);               
+                DrawText("Press X to continue", (screenWidth/2-continueLength/2), screenHeight-fontSizeSplash, 50, RED);
                 break;
             }
             case StartScreen:
             {
-                DrawText("StartScreen", (screenWidth/2), 5, 50, BLACK);
+                
+                Rectangle source = {0,0, zombieStartImage.width, zombieStartImage.height};
+                Rectangle dest = {0,0, screenWidth, screenHeight};
+                Vector2 origin = {0,0};
+                DrawTexturePro(zombie2Texture, source, dest, origin, 0.0f, WHITE);
+                int fontSizeStart = 50;
+                int startMeasure = MeasureText("StartScreen", fontSizeStart);
+                int backMeasure = MeasureText("Press top button on right face to go back", fontSizeStart);
+                DrawText("StartScreen", (screenWidth/2)-(startMeasure/2), 5, fontSizeStart, RED);
+                DrawText("Press top button on right face to go back", (screenWidth/2)-(backMeasure/2), 5+fontSizeStart, fontSizeStart, RED);
+                
                 break;
             }
             case Level_1:
             {
-                DrawText("Level 1", (screenWidth/2), 5, 50, BLACK);
+                DrawText("Level 1", (screenWidth/2), 5, 50, RED);
                 break;
             }
         }

@@ -17,3 +17,27 @@
 #include <stdio.h>
 #include <string.h>
 #include <raylib.h>
+
+
+int main(void)
+{
+    const int screenWidth = 800;
+    const int screenHeight = 450;
+
+    InitWindow(screenWidth, screenHeight, "RECLONE");
+
+
+    while(!WindowShouldClose())
+    {
+
+        BeginDrawing();
+
+        ClearBackground(WHITE);
+
+
+
+        EndDrawing();
+    }
+
+    return 0;
+}

@@ -1,46 +1,31 @@
-# Compiler and flags
+# Compiler and Flags
 CC = gcc
-CFLAGS = -Wall -Wextra -fsanitize=address
-DEBUG_FLAGS = -g
-RELEASE_FLAGS = -Wall -Wextra -O2 -s      # Enable debugging with -g flag
-LDFLAGS = -lraylib -lm -lpthread -ldl -lrt -lX11  # Link against Raylib and other required libraries
+CFLAGS = -Wall -Wextra -I/usr/local/include
+LDFLAGS = -L/usr/local/lib -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 
-# Paths (modify these based on your setup)
-INCLUDE_PATH = /usr/local/include
-LIBRARY_PATH = /usr/local/lib
+# Source files and Output
+SRC = $(wildcard *.c)
+OBJ = $(SRC:.c=.o)
+TARGET = game
 
-# Project files
-SOURCES = game.c                 # Add additional source files as needed
-OBJECTS = $(SOURCES:.c=.o)
-TARGET = game_exe                 # Output executable name
+# Default target
+all: $(TARGET)
 
-# Compilation rules
-all: debug                       # Default to debug build
+# Compile the game
+$(TARGET): $(OBJ)
+	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
 
-# Build target with debugging info
-debug: CFLAGS += $(DEBUG_FLAGS)
-debug: $(TARGET)
-
-# Build target with symbols stripped (release mode)
-release: CFLAGS += $(RELEASE_FLAGS)
-release: $(TARGET)
-
-# Build the target executable
-$(TARGET): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $(TARGET) $(CFLAGS) -I$(INCLUDE_PATH) -L$(LIBRARY_PATH) $(LDFLAGS)
-
-# Compile .c files into .o object files
+# Compile object files
 %.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS) -I$(INCLUDE_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@
 
-# Clean up build files
+# Clean build files
 clean:
-	rm -f $(OBJECTS) $(TARGET)
-
-# Run memory leak check with Valgrind
-valgrind: debug
-	valgrind --leak-check=full ./$(TARGET)
+	rm -f $(OBJ) $(TARGET)
 
 # Run the game
 run: $(TARGET)
-	LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libasan.so ./$(TARGET)
+	./$(TARGET)
+
+# Phony targets (avoid conflicts with files of the same name)
+.PHONY: all clean run

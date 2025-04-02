@@ -24,8 +24,13 @@ typedef enum GameScreen {
 } GameScreen;
 
 
+
+
+
+
 int main(void)
 {
+    // INITIALAZATION 
     const int screenWidth = 800;
     const int screenHeight = 450;
 
@@ -33,7 +38,24 @@ int main(void)
 
     GameScreen currentScreen = TITLE;
 
+    // TITLE screen //
 
+    Texture2D zombie1 = LoadTexture("images/zombie1.jpg");
+
+    Rectangle srcRect = { 0.0f, 0.0f, (float)zombie1.width, (float)zombie1.height};
+    Rectangle destRect = { 0.0f, 0.0f, (float)screenWidth, (float)screenHeight};
+    Vector2 rectOrigin = { 0.0f, 0.0f };
+
+    if(zombie1.id == 0)
+    {
+        printf("Failed to load zombie1.\n");
+    }
+
+
+    // LEVEL1 screen //
+
+    SetTargetFPS(60);
+    // MAIN GAME LOOP //
     while(!WindowShouldClose())
     {   
         if(IsGamepadAvailable(0))
@@ -42,7 +64,7 @@ int main(void)
         {
             case TITLE:
             {
-                if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT))
+                if (IsGamepadButtonPressed(0, GAMEPAD_BUTTON_MIDDLE_RIGHT) || IsKeyPressed(KEY_SPACE))
                 {
                     currentScreen = LEVEL1;
                 }
@@ -64,18 +86,21 @@ int main(void)
             {
                 case TITLE:
                 {
+                    // background image
+                    DrawTexturePro(zombie1, srcRect, destRect, rectOrigin, 0.0f, WHITE);
+                    // TITLE SCREEN TEXT
                     int fontSize = 40;
-                    
                     int startText = MeasureText("PRESS START", fontSize);
                     int reText = MeasureText("RESIDENT EVIL CLONE", fontSize);
-                    DrawText("RESIDENT EVIL CLONE", screenWidth/2-(reText/2), 20, fontSize, RED);
-
-
-                    DrawText("PRESS START", screenWidth/2-(startText/2), screenHeight-60, fontSize, RED);
+                    DrawText("RESIDENT EVIL CLONE", screenWidth/2-(reText/2), 20, fontSize, RED);                    DrawText("PRESS START", screenWidth/2-(startText/2), screenHeight-60, fontSize, RED);
 
                 } break;
                 case LEVEL1:
                 {
+                    // LEVEL1 TEXT
+                    int fontSize = 20;
+                    // int level1Size = MeasureText("LEVEL1", fontSize);
+                    DrawText("LEVEL1", 2, 2, fontSize, BLACK);
 
                 } break;
             }
@@ -85,5 +110,7 @@ int main(void)
         EndDrawing();
     }
 
+    UnloadTexture(zombie1);
+    CloseWindow();
     return 0;
 }

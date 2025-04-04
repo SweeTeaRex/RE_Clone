@@ -63,7 +63,7 @@ int main(void)
     mainCamera.projection = CAMERA_PERSPECTIVE;
 
     // CUBIC MAP
-    Image mapImage = LoadImage("assets/map1.png");
+    Image mapImage = LoadImage("assets/map2.png");
     
     if(mapImage.data == NULL)
     {

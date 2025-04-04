@@ -31,8 +31,8 @@ typedef enum GameScreen {
 int main(void)
 {
     // INITIALAZATION 
-    const int screenWidth = 800;
-    const int screenHeight = 450;
+    const int screenWidth = 1387;
+    const int screenHeight = 780;
 
     InitWindow(screenWidth, screenHeight, "RECLONE");
 
@@ -40,19 +40,43 @@ int main(void)
 
     // TITLE screen //
 
-    Texture2D zombie1 = LoadTexture("images/zombie1.jpg");
+    Texture2D zombie1 = LoadTexture("images/zombie2.jpg");
 
     Rectangle srcRect = { 0.0f, 0.0f, (float)zombie1.width, (float)zombie1.height};
     Rectangle destRect = { 0.0f, 0.0f, (float)screenWidth, (float)screenHeight};
     Vector2 rectOrigin = { 0.0f, 0.0f };
 
-    if(zombie1.id == 0)
-    {
-        printf("Failed to load zombie1.\n");
-    }
+    
 
 
     // LEVEL1 screen //
+
+    // CAMERA
+    Camera mainCamera = { 0 };
+    mainCamera.position = (Vector3){ 30.0f, 30.0f, 30.0f };
+    mainCamera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+    mainCamera.fovy = 45.0f;
+    mainCamera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
+    mainCamera.projection = CAMERA_PERSPECTIVE;
+
+    // CUBIC MAP
+    Image mapImage = LoadImage("assets/cubeAtlas.png");
+    
+    if(mapImage.data == NULL)
+    {
+        printf("Failed to load mapImage \n");
+    }
+
+    TextureCubemap cubicMap = LoadTextureCubemap(mapImage, CUBEMAP_LAYOUT_AUTO_DETECT);
+    Texture2D level1text = LoadTextureFromImage(mapImage);
+    Mesh cubicMapMesh = GenMeshCubicmap(mapImage, (Vector3){ 1.0f, 1.0f, 1.0f });
+    
+    Model mapModel = LoadModelFromMesh(cubicMapMesh);
+
+    mapModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = level1text;
+
+    Vector3 mapPosition = { -16.0f, 0.0f, -8.0f };
+
 
     SetTargetFPS(60);
     // MAIN GAME LOOP //
@@ -92,15 +116,24 @@ int main(void)
                     int fontSize = 40;
                     int startText = MeasureText("PRESS START", fontSize);
                     int reText = MeasureText("RESIDENT EVIL CLONE", fontSize);
-                    DrawText("RESIDENT EVIL CLONE", screenWidth/2-(reText/2), 20, fontSize, RED);                    DrawText("PRESS START", screenWidth/2-(startText/2), screenHeight-60, fontSize, RED);
+                    DrawText("RESIDENT EVIL CLONE", screenWidth/2-(reText/2), 20, fontSize, RED);                    
+                    DrawText("PRESS START", screenWidth/2-(startText/2), screenHeight-60, fontSize, RED);
 
                 } break;
                 case LEVEL1:
                 {
+                    BeginMode3D(mainCamera);
+
+                        DrawModel(mapModel, mapPosition, 1.0f, RAYWHITE);
+                    
+                    EndMode3D();
+
                     // LEVEL1 TEXT
                     int fontSize = 20;
-                    // int level1Size = MeasureText("LEVEL1", fontSize);
+                                        
                     DrawText("LEVEL1", 2, 2, fontSize, BLACK);
+
+                    
 
                 } break;
             }

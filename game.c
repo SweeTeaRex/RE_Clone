@@ -51,16 +51,19 @@ int main(void)
 
     // LEVEL1 screen //
 
+
+    bool pause = false;
+
     // CAMERA
     Camera mainCamera = { 0 };
-    mainCamera.position = (Vector3){ 30.0f, 30.0f, 30.0f };
-    mainCamera.target = (Vector3){ 0.0f, 0.0f, 0.0f };
+    mainCamera.position = (Vector3){ 0.7f, 0.4f, 0.2f };
+    mainCamera.target = (Vector3){ 13.0f, 0.0f, 0.0f };
     mainCamera.fovy = 45.0f;
     mainCamera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     mainCamera.projection = CAMERA_PERSPECTIVE;
 
     // CUBIC MAP
-    Image mapImage = LoadImage("assets/cubeAtlas.png");
+    Image mapImage = LoadImage("assets/map1.png");
     
     if(mapImage.data == NULL)
     {
@@ -68,20 +71,21 @@ int main(void)
     }
 
     TextureCubemap cubicMap = LoadTextureCubemap(mapImage, CUBEMAP_LAYOUT_AUTO_DETECT);
-    Texture2D level1text = LoadTextureFromImage(mapImage);
+    Texture2D level1text = LoadTexture("assets/panelAtlas.png");
     Mesh cubicMapMesh = GenMeshCubicmap(mapImage, (Vector3){ 1.0f, 1.0f, 1.0f });
     
     Model mapModel = LoadModelFromMesh(cubicMapMesh);
 
     mapModel.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = level1text;
 
-    Vector3 mapPosition = { -16.0f, 0.0f, -8.0f };
+    Vector3 mapPosition = { 0.0f, 0.0f, -1.0f };
 
-
+    DisableCursor();
     SetTargetFPS(60);
     // MAIN GAME LOOP //
     while(!WindowShouldClose())
     {   
+
         if(IsGamepadAvailable(0))
         {
         switch (currentScreen)
@@ -97,11 +101,13 @@ int main(void)
 
             case LEVEL1:
             {
+                if (IsKeyPressed(KEY_P)) pause = !pause;
 
+                if (!pause) UpdateCamera(&mainCamera, CAMERA_FIRST_PERSON);
             } break;
         }
         }
-        
+    
         BeginDrawing();
 
             ClearBackground(WHITE);

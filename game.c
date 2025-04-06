@@ -36,7 +36,8 @@ int main(void)
 
     InitWindow(screenWidth, screenHeight, "RECLONE");
 
-    GameScreen currentScreen = TITLE;
+    // GameScreen currentScreen = TITLE;
+    GameScreen currentScreen = LEVEL1;
 
     // TITLE screen //
 
@@ -56,21 +57,14 @@ int main(void)
 
     // CAMERA
     Camera mainCamera = { 0 };
-    mainCamera.position = (Vector3){ 0.7f, 0.4f, 0.2f };
+    mainCamera.position = (Vector3){ 0.7f, 0.4f, 15.2f };
     mainCamera.target = (Vector3){ 13.0f, 0.0f, 0.0f };
     mainCamera.fovy = 45.0f;
     mainCamera.up = (Vector3){ 0.0f, 1.0f, 0.0f };
     mainCamera.projection = CAMERA_PERSPECTIVE;
 
     // CUBIC MAP
-    Image mapImage = LoadImage("assets/map2.png");
-    
-    if(mapImage.data == NULL)
-    {
-        printf("Failed to load mapImage \n");
-    }
-
-    TextureCubemap cubicMap = LoadTextureCubemap(mapImage, CUBEMAP_LAYOUT_AUTO_DETECT);
+    Image mapImage = LoadImage("assets/map2.png");    TextureCubemap cubicMap = LoadTextureCubemap(mapImage, CUBEMAP_LAYOUT_AUTO_DETECT);
     Texture2D level1text = LoadTexture("assets/panelAtlas.png");
     Mesh cubicMapMesh = GenMeshCubicmap(mapImage, (Vector3){ 1.0f, 1.0f, 1.0f });
     
@@ -80,11 +74,30 @@ int main(void)
 
     Vector3 mapPosition = { 0.0f, 0.0f, -1.0f };
 
+    // zombie sprite
+
+    Texture2D zombieSprite = LoadTexture("assets/zombieSprite.png");
+    Rectangle zombieSpriteFrame = { 0.0f, 0.0f, (float)zombieSprite.width/9, (float)zombieSprite.height/5};
+    
+    Vector2 zombieSpriteSize = { 1.0f, 1.0f };
+
+    // zombie 1
+    Vector3 zombieSprite1Pos = { 5.0f, 0.5f, 1.0f };
+    int zombieDirection = 1;
+    // zombie 2
+    Vector3 zombieSprite2Pos = { 15.0f, 0.5f, 1.0f };
+
+    int currentFrame = 0;
+
+    int framerCounter = 0;
+    int frameSpeed = 4;
+
     DisableCursor();
     SetTargetFPS(60);
     // MAIN GAME LOOP //
     while(!WindowShouldClose())
     {   
+        
 
         if(IsGamepadAvailable(0))
         {
@@ -104,6 +117,25 @@ int main(void)
                 if (IsKeyPressed(KEY_P)) pause = !pause;
 
                 if (!pause) UpdateCamera(&mainCamera, CAMERA_FIRST_PERSON);
+
+                framerCounter++;
+
+                if(framerCounter >= (60/frameSpeed))
+                {
+                    framerCounter = 0;
+                    currentFrame++;
+
+                if(currentFrame > 5) currentFrame = 0;
+
+                zombieSpriteFrame.x = (float)currentFrame*(float)zombieSprite.width/9;
+
+                if(currentFrame == 5)
+                {
+                    zombieSpriteFrame.y = zombieSpriteFrame.y + zombieSprite.height/5;
+                }
+
+
+        }
             } break;
         }
         }
@@ -131,6 +163,10 @@ int main(void)
                     BeginMode3D(mainCamera);
 
                         DrawModel(mapModel, mapPosition, 1.0f, RAYWHITE);
+
+                        DrawBillboardRec(mainCamera, zombieSprite, zombieSpriteFrame, zombieSprite1Pos, zombieSpriteSize, WHITE); 
+
+                        DrawBillboardRec(mainCamera, zombieSprite, zombieSpriteFrame, zombieSprite2Pos, zombieSpriteSize, WHITE);
                     
                     EndMode3D();
 
